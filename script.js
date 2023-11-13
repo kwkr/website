@@ -132,6 +132,8 @@ gui.add(obj, 'cameraZ', 100, 300, 10).name("camera distance").onFinishChange(() 
     console.log(obj.cameraZ)
     camera.position.z = obj.cameraZ;
 });
+gui.close();
+
 
 function degreesToRadians(degrees) {
     return degrees * (Math.PI / 180);
@@ -392,3 +394,5 @@ function hsvToHex(h, s, v) {
 
     return "#" + rgbToHex(r) + rgbToHex(g) + rgbToHex(b);
 }
+
+

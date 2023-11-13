@@ -2,15 +2,13 @@
 
 <head>
     <meta charset="UTF-8" />
-    <title>Three.js 101</title>
+    <title>The coolest intro to Three.js</title>
     <style>
         body {
             margin: 0;
-        }
-
-        * {
             background-color: #222436;
             color: #dfe2ed;
+            font-family: monospace;
         }
 
         canvas {
@@ -19,21 +17,100 @@
 
         .container {
             width: 100%;
-            height: 100%;
-            margin: auto 0;
+            margin: 24px auto;
             display: flex;
             justify-content: center;
+        }
+
+        h1 {
+            margin: 12px 48px;
+        }
+
+        main {
+            margin: 0 48px;
+        }
+
+        .code {
+            border-radius: 4px;
+        }
+
+        p {
+            text-align: justify;
+        }
+
+        a:link {
+            color: rgb(45, 192, 218);
+        }
+
+        a:visited {
+            color: rgb(34, 158, 180);
+        }
+
+        a:hover {
+            color: rgb(219, 80, 150);
+        }
+
+        a:active {
+            color: rgb(23, 106, 121);
+            ;
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r83/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/lil-gui@0.19"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/javascript.min.js"></script>
+
 </head>
 
 <body>
+    <h1>The coolest intro to Three.js</h1>
     <div class="container">
         <canvas id="birdsCanvas"></canvas>
     </div>
+    <main>
+        <h2>How it started?</h2>
+        <p>For the last couple of weeks, I experimented with automated video generation. I noticed that a short,
+            narrated form can be quite compelling for viewers. I already had some ideas for the main content, but I also
+            needed something eye-catching in the background. <a target="_blank" rel="noopener noreferrer"
+                href="https://www.youtube.com/watch?v=nK20apFeDkY">Minecraft</a>
+            parkour footage is already all over the place, so
+            I wanted to come up with
+            something unique. Because of that, I started researching generative algorithms. When visualized, they look
+            pretty cool and provide almost unlimited possibilities for randomization which means seemingly new content
+            can be easily created. I stumbled upon a 2D version of <a href="">boids</a> implemented by <a
+                target="_blank" rel="noopener noreferrer" href="https://eater.net/boids">Ben Eater</a>. After modifying
+            it a bit, I could achieve some
+            visually pleasing effects.</p>
+        <video style="width: 400px;" src="2d-boids.mp4" loop controls></video>
+        <p> It would be a lot cooler though, if this were done in 3D. The logic is very simple so nothing prevents me
+            from introducing another dimension to it. With the help of <a target="_blank" rel="noopener noreferrer"
+                href="https://threejs.org/">Tree.js</a> the
+            result that you can see at the top can be achieved. You will also learn a thing or two which you can later
+            use for your own projects.</p>
+
+        <h2>What you will learn?</h2>
+        <p>
+            A lot...
+        <ul>
+            <li>How to setup a scene, camera, lights.</li>
+            <li>Rules of the boids algorithm.</li>
+            <li>What is geometry, mesh, material, shader.</li>
+            <li>How the rendering is done.</li>
+            <li>How to move objects around.</li>
+        </ul>
+        </p>
+        <h2>Lights, perspective camera, action!</h2>
+        <pre><code class="language-javascript code">
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
+camera.position.z = obj.cameraZ;
+        </code></pre>
+    </main>
     <script src="script.js"></script>
+    <script>hljs.highlightAll();</script>
 </body>
 
 </html>
