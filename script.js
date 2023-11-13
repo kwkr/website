@@ -37,7 +37,7 @@ scene.add(boundaryMesh);
 
 // add bottom plane
 const planeGeometry = new THREE.PlaneGeometry(2000, 2000);
-const planeMaterial = new THREE.MeshPhongMaterial({ color: '#0ad34b', side: THREE.BackSide, shininess: 1 });
+const planeMaterial = new THREE.MeshPhongMaterial({ color: '#0ad34b', side: THREE.BackSide });
 const plane = new THREE.Mesh(planeGeometry, planeMaterial);
 plane.receiveShadow = true;
 plane.rotation.x = degreesToRadians(90);
@@ -72,8 +72,8 @@ const fragmentShader = `
 `;
 
 const skyMaterial = new THREE.ShaderMaterial({
-    vertexShader: vertexShader,
-    fragmentShader: fragmentShader,
+    vertexShader,
+    fragmentShader,
     side: THREE.BackSide
 });
 const skyGeometry = new THREE.SphereGeometry(500, 32, 32);
@@ -165,34 +165,33 @@ for (let k = 0; k < obj.birdsCount; k++) {
 
 
 
-function adjustForBoundries(c) {
-    const shape = c.shape;
+function adjustForBoundaries(bird) {
+    const shape = bird.shape;
     const adjust = obj.boundariesAdjust;
     if (shape.position.x < -obj.boundarySize) {
-        c.dx += adjust;
+        bird.dx += adjust;
     }
 
     if (shape.position.x > obj.boundarySize) {
-        c.dx -= adjust;
+        bird.dx -= adjust;
     }
 
     if (shape.position.y < -PLANE_LEVEL) {
-        c.dy += adjust;
+        bird.dy += adjust;
     }
 
     if (shape.position.y > obj.boundarySize) {
-        c.dy -= adjust;
+        bird.dy -= adjust;
     }
 
     if (shape.position.z < -obj.boundarySize) {
-        c.dz += adjust;
+        bird.dz += adjust;
     }
 
     if (shape.position.z > obj.boundarySize) {
-        c.dz -= adjust;
+        bird.dz -= adjust;
     }
 }
-
 
 function adjustForFlock(i) {
     const adjust = obj.flockAdjust;
@@ -250,25 +249,25 @@ function adjustForDistance(i) {
     const distance = obj.minDistance;
     const adjust = obj.distanceAdjust;
 
-    let ddx = 0;
-    let ddy = 0;
-    let ddz = 0;
+    let cx = 0;
+    let cy = 0;
+    let cz = 0;
     let count = 0;
     for (const c of birdsObjects) {
         if (c.id !== i.id) {
             if (distanceVector(i.shape.position, c.shape.position) < distance) {
                 count++;
-                ddx += ((i.shape.position.x - c.shape.position.x) * adjust);
-                ddy += ((i.shape.position.y - c.shape.position.y) * adjust);
-                ddz += ((i.shape.position.z - c.shape.position.z) * adjust);
+                cx += c.shape.position.x;
+                cy += c.shape.position.y;
+                cz += c.shape.position.z;
             }
         }
     }
 
     if (count) {
-        i.dx += ddx / count;
-        i.dy += ddy / count;
-        i.dz += ddz / count;
+        i.dx += (i.shape.position.x - (cx / count)) * adjust;
+        i.dy += (i.shape.position.y - (cy / count)) * adjust;
+        i.dz += (i.shape.position.z - (cz / count)) * adjust;
     }
 }
 
@@ -331,24 +330,24 @@ function updateCameraPosition() {
 const render = function () {
     requestAnimationFrame(render);
 
-    for (const c of birdsObjects) {
-        adjustForBoundries(c);
-        adjustForFlock(c);
-        adjustAlignment(c);
-        adjustForDistance(c);
-        adjustSpeed(c);
+    for (const item of birdsObjects) {
+        adjustForBoundaries(item);
+        adjustForFlock(item);
+        adjustAlignment(item);
+        adjustForDistance(item);
+        adjustSpeed(item);
 
-        const shape = c.shape;
+        const shape = item.shape;
 
 
-        shape.position.x += c.dx;
-        shape.position.y += c.dy;
-        shape.position.z += c.dz;
+        shape.position.x += item.dx;
+        shape.position.y += item.dy;
+        shape.position.z += item.dz;
 
-        var direction = new THREE.Vector3(c.dx, c.dy, c.dz);
+        const direction = new THREE.Vector3(item.dx, item.dy, item.dz);
         direction.normalize();
-        var forward = new THREE.Vector3(0, 1, 0);
-        var quaternion = new THREE.Quaternion();
+        const forward = new THREE.Vector3(0, 1, 0);
+        const quaternion = new THREE.Quaternion();
         quaternion.setFromUnitVectors(forward, direction);
         shape.quaternion.copy(quaternion);
     }
