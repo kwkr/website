@@ -1,0 +1,39 @@
+body {
+    margin: 0;
+    background-color: #222436;
+    color: #dfe2ed;
+    font-family: monospace;
+}
+
+a:link {
+    color: rgb(45, 192, 218);
+}
+
+a:visited {
+    color: rgb(34, 158, 180);
+}
+
+a:hover {
+    color: rgb(219, 80, 150);
+}
+
+a:active {
+    color: rgb(23, 106, 121);
+}
+
+h1 {
+    margin: 12px 48px;
+}
+
+main {
+    margin: 0 48px;
+    margin-bottom: 24px;
+}
+
+.code {
+    border-radius: 4px;
+}
+
+p {
+    text-align: justify;
+}
