@@ -28,6 +28,7 @@
 
         main {
             margin: 0 48px;
+            margin-bottom: 24px;
         }
 
         .code {
@@ -88,7 +89,7 @@
         <video style="width: 400px;" src="2d-boids.mp4" loop controls></video>
         <p> It would be a lot cooler though, if this were done in 3D. The logic is very simple so nothing prevents me
             from introducing another dimension to it. With the help of <a target="_blank" rel="noopener noreferrer"
-                href="https://threejs.org/">Tree.js</a> the
+                href="https://threejs.org/">Three.js</a> the
             result that you can see at the top can be achieved. You will also learn a thing or two which you can later
             use for your own projects.</p>
 
@@ -116,10 +117,10 @@
         </p>
         <pre><code class="language-javascript code">const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);</code></pre>
-        <p> Renderer is the
+        <p> The renderer is the
             workhorse of our setup. It renders to the canvas what we tell it to render. When creating a new renderer, we
             can use some canvas that we already have in our HTML document. What we see when we look at the results of
-            the render, are images, that quickly change to give us the illusion of movement on the screen. The single
+            the render are images that quickly change to give us the illusion of movement on the screen. The single
             such image is called a <b><i>frame</i></b>. Because it's a series of frames, we need to clear the display
             after
             each frame, in order to start fresh every time.</p>
@@ -127,20 +128,21 @@ const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerH
 const renderer = new THREE.WebGLRenderer({ antialias: true, canvas });
 renderer.setClearColor("#000000");</code></pre>
         <p>
-            Believe it or not, this is everything you need to start rendering. The stage will be empty at first, but we
-            will take care of adding some elements shortly. Remember when I told you about <b><i>frames</i></b>? Let's
+            Believe it or not, this is everything we need to start rendering. The stage will be empty at first, but we
+            will take care of adding some elements shortly. Remember when I mentioned <b><i>frames</i></b>? Let's
             see
             exactly what I meant when I said they a series of images shown to us one by one. The code below is the
             <b><i>rendering loop</i></b>. Maybe it doesn't look like much at first, but the magic actually happens with
-            the <b><i>requestAnimationFrame</i></b> function call. This let's the browser know, that we want to render
-            something and when the right time comes, browser runs the provided render function. Each render call
+            the <b><i>requestAnimationFrame</i></b> function call. This lets the browser know, that we want to render
+            something and when the right time comes, the browser runs the provided render function. Each render call
             schedules another one so we will run again and again until the user closes the tab. Painting is done at the
-            end of the render call. Usually, before performing it, you might want to update objects on your scene, so
-            the frame that will get painted differs from the previous one. For example if you have some object that is
-            moving, you update its position by some amount. Because single render call is very fast, this update is done
+            end of the render call. Usually, before performing it, we might want to update objects on our scene, so
+            the frame that will get painted differs from the previous one. For example if we have some object that is
+            moving, we update its position by some amount. Because a single render call is very fast, this update is
+            done
             many times per second.Let's say with each frame the object moves to the right by 1 centimeter. If we repeat
             the move 30 times within one second, when it passes, the object will smoothly transition to the right by 30
-            centimeters. This is how the illusion works. To recap: you update your objects and then the
+            centimeters. This is how the illusion works. To recap: we update our objects and then the
             <b><i>renderer</i></b> renders a <b><i>frame</i></b> combining the scene with the camera.
         </p>
         <pre><code class="language-javascript code">const render = function () {
@@ -152,8 +154,9 @@ renderer.setClearColor("#000000");</code></pre>
 };
 render();</code></pre>
         <p>However with the current setup we wouldn't render anything meaningful. We didn't add any objects to the
-            scene! What do you want add first? Some cube? Or maybe some complicated model of a cat? That would be cool,
-            but we would still only see darkness. Because of that, I would recommend starting with some light source.
+            scene! What do we want to add first? Some cube? Or perhaps a model of a cat? That would be
+            cool,
+            but we would still only see darkness. Therefore, I recommend starting with some light source.
         </p>
         <pre><code class="language-javascript code">// add light source
 const color = 0xFFFFFF;
@@ -164,7 +167,7 @@ scene.add(light);</code></pre>
         <p>This is the first object, that we will add to our scene. We specify some initial properties, set the position
             for it and add it. Remember this step, because adding other interesting objects will be very close to this.
         </p>
-        <p>Finally it's time to add something that we will see. Out implementation of the boids algorithm will include
+        <p>Finally it's time to add something that we will see. Our implementation of the boids algorithm will include
             some boundaries. This is like a cage, within which all the action will happen. If some bird decides to fly
             away, the rules we set will make it come back.</p>
         <pre><code class="language-javascript code">// add boundary
@@ -176,13 +179,13 @@ scene.add(boundaryMesh);</code></pre>
         <p>There are some common elements that we need to specify in order to create and object that will be visible
             when rendered. The object that we see is a <b><i>mesh</i></b>. It combines information about what is the
             shape of the object or <b><i>geometry</i></b> and the information about how does it look like called
-            <b><i>material</i></b> (you can additionally boost your material with shaders which I will mention later).
+            <b><i>material</i></b> (we can additionally boost our material with shaders which I will mention later).
             Because we are only interested in the lines of the boundaries, the process is a bit
-            more complicated. The <b><i>geometry</i></b> that we create consists of two steps. Creating
+            more complicated. The process of creating the <b><i>geometry</i></b> involves two steps. Creating
             <b><i>material</i></b> is just a single step. We define it's color and that's it. Finally we compose the
             target object using both parts that we created. Afterwards we add the <b><i>mesh</i></b> to the scene. If
-            you run the script now, you will actually see the boundaries being rendered. The information that you got so
-            far would already suffice if you wanted to create some render. You could grab some <b><i>mesh</i></b>, pick
+            we run the script now, we will actually see the boundaries being rendered. The information that we got so
+            far would already suffice if we wanted to create some render. We could grab some <b><i>mesh</i></b>, pick
             some <b><i>material</i></b> and add it to the scene to see it rendered. But we are not stopping here. We are
             still far from finished and have many interesting problems to solve ahead of us.
         </p>
@@ -209,10 +212,11 @@ function getNewBird(id) {
     const item = { shape: mesh, dx, dy, dz, id };
     return item;
 }</code></pre>
-        <p>We will be calling the function above to obtain so called <i>bird-oid objects (boids)</i> instances. You can
+        <p>We will be calling the function above to obtain so called <i>bird-oid objects (boids)</i> instances. We can
             already recognize some familiar elements like geometry, material and a resulting mesh. While creating a new
             boid, we place it in a random place within our boundaries by changing the <i>position</i> property on the
-            mesh. The XYZ coordinates are not enough for performing magic. We also need something that will allow us to
+            mesh. The XYZ coordinates alone aren't enough for performing magic. We also need something that will allow
+            us to
             tell how the specific boid moves within the 3D space. We generate 3 additional values, one for each of the
             directions: dx, dy and dz. Together they form a vector, that describes in which direction and how fast the
             boid will be moving. The values will be added to the position on each update to create the illusion of
@@ -290,7 +294,7 @@ render();</code></pre>
     }
 }</code></pre>
         <p>After the rule is ready, we can place it within our render loops. The function is meant to update a single
-            boid, so we also need to make sure it gets called for each of them. By now you should already know what
+            boid, so we also need to make sure it gets called for each of them. By now we should already know what
             piece of code comes next:</p>
         <pre><code class="language-javascript code">const render = function () {
     requestAnimationFrame(render);
@@ -428,7 +432,7 @@ render();</code></pre>
     }
 }</code></pre>
         <h2>Putting it all together</h2>
-        <p>You have seen this fragment so many times, that this step should be a formality to you. You would be able to
+        <p>We have seen this fragment so many times, that this step should be a formality to us. We would be able to
             blindly tell where should we put our newly defined rules. There is one simple rule that I skipped here. To
             keep the simulation perceivable, we need to set a max limit on the speed at which the boids are moving. As a
             simple exercise, you can either try implementing it yourself or just look at the full source code. After
@@ -453,7 +457,7 @@ render();</code></pre>
 };
 render();</code></pre>
         <h2>Pimp my birds</h2>
-        <p>Are you happy with yourself? "What's there to be happy about? Job's not finished. Job finished? No, I don't
+        <p>Are we happy with ourselves? "What's there to be happy about? Job's not finished. Job finished? No, I don't
             think so."There are a few final touches
             that we need to add in order to call the job done. It works, but it's not as pretty as it could be. Our bird
             are cone-shaped so we definitely have some potential there. Also I promised you shaders, so we need to
@@ -486,20 +490,20 @@ render();</code></pre>
     renderer.render(scene, camera);
 };
 render();</code></pre>
-        <p>Oh boi, how many times did we already see this? But there is a reason to it. You can actually say your whole
+        <p>Oh boi, how many times did we already see this? But there is a reason to it. We can actually say our whole
             simulation lives in here. That's why we added some changes here. Given the information about speed in
             different directions, we can construct a vector that tells us where a bird is going. We use this
             information, to rotate our mesh with it's pointy end facing the desired direction. Don't be scared of the
-            quaternions. They are there to make your work with 3D rotations easier. In simple words, they are used to
-            describes operation needed to go from one orientation to another. You take an start vector, you take the
+            quaternions. They are there to make our work with 3D rotations easier. In simple words, they are used to
+            describes operation needed to go from one orientation to another. We take the start vector, we take the
             target
-            vector and the quaternion tells you how you can land where you want to land. The rotation is finalized, when
+            vector and the quaternion tells us how we can land where we want to land. The rotation is finalized, when
             we call the <i>copy</i> method. With this change, our birds will look much more alive!</p>
         <p>As the last part we will take the boids out of a void and place them in a real world. To do this, we will
             give them some fake ground underneath and a fake sky.</p>
-        <p>Creating a ground is super simple. Same process of creating a mesh again. You create a plane geometry first,
-            a simple green material next, you connect them in a mesh and add to the scene. After adjusting the position
-            a bit, it's ready to be rendered.</p>
+        <p>Creating a ground is super simple. Same process of creating a mesh again. We create a plane geometry first,
+            a simple green material next, we connect them in a mesh and add to the scene. After adjusting the position
+            a bit, it is ready to be rendered.</p>
         <pre><code class="language-javascript code">// add bottom plane
 const planeGeometry = new THREE.PlaneGeometry(2000, 2000);
 const planeMaterial = new THREE.MeshPhongMaterial({ color: '#0ad34b' });
@@ -507,19 +511,19 @@ const plane = new THREE.Mesh(planeGeometry, planeMaterial);
 plane.rotation.x = degreesToRadians(90);
 plane.position.y = -PLANE_LEVEL - 20;
 scene.add(plane);</code></pre>
-        <p>It gets more fun when creating a sky. Rendering is all about cheating. You use some seemingly unrelated
+        <p>It gets more fun when creating a sky. Rendering is all about cheating. We use some seemingly unrelated
             things and make them pretend to be someone else. To create a sky, we take a sphere. Then we make it big
             enough to contain our microcosmos and put everything in the middle. We paint it blue from the inside and
             voilà! From the boids perspective it looks like they have a nice spherical sky above them.</p>
         <pre><code class="language-javascript code">// create sky
-            const skyMaterial = new THREE.ShaderMaterial({
-            vertexShader,
-            fragmentShader,
-            side: THREE.BackSide
-        });
-        const skyGeometry = new THREE.SphereGeometry(500, 32, 32);
-        const skyMesh = new THREE.Mesh(skyGeometry, skyMaterial);
-        scene.add(skyMesh);</code></pre>
+const skyMaterial = new THREE.ShaderMaterial({
+    vertexShader,
+    fragmentShader,
+    side: THREE.BackSide
+});
+const skyGeometry = new THREE.SphereGeometry(500, 32, 32);
+const skyMesh = new THREE.Mesh(skyGeometry, skyMaterial);
+scene.add(skyMesh);</code></pre>
         <p>Do I really have to go over creating a mesh again? Okay, take the geometry, take the material, combine it in
             a mesh and add it to the scene... Wait! There is something strange with the material over there! I can
             finally see a shader mentioned! But what exactly is it? Or what are THEY? In simple terms, they are programs
@@ -529,7 +533,7 @@ scene.add(plane);</code></pre>
             they
             are capable of, I strongly recommend checking out <a target="_blank" rel="noopener noreferrer"
                 href="https://www.shadertoy.com/">Shadertoy</a>. In our case they simply produce a blue gradient, but
-            this is a very primitive example. Yet you have to start somewhere.</p>
+            this is a very primitive example. Yet we have to start somewhere.</p>
 
         <h2>Summary</h2>
         So that's it. With this lengthy article we were not only able to build a funny toy to play with, but also learn
