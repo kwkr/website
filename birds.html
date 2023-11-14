@@ -134,7 +134,7 @@ scene.add(light);</code></pre>
             some boundaries. This is like a cage, within which all the action will happen. If some bird decides to fly
             away, the rules we set will make it come back.</p>
         <pre><code class="language-javascript code">// add boundary
-const edgesGeo = new THREE.BoxGeometry(obj.boundarySize * 2, obj.boundarySize * 2, obj.boundarySize * 2);
+const edgesGeo = new THREE.BoxGeometry(settings.boundarySize * 2, settings.boundarySize * 2, settings.boundarySize * 2);
 const edges = new THREE.EdgesGeometry(edgesGeo);
 const basicMaterial = new THREE.LineBasicMaterial({ color: '0x00ff00' });
 const boundaryMesh = new THREE.LineSegments(edges, basicMaterial);
@@ -165,10 +165,9 @@ scene.add(boundaryMesh);</code></pre>
 function getNewBird(id) {
     const material = new THREE.MeshToonMaterial({ color: colors[Math.floor(Math.random() * colors.length)] });
     const mesh = new THREE.Mesh(geometry, material);
-    mesh.castShadow = true;
-    mesh.position.x = obj.boundarySize - Math.floor(Math.random() * obj.boundarySize * 2);
-    mesh.position.y = obj.boundarySize - Math.floor(Math.random() * obj.boundarySize * 2);
-    mesh.position.z = obj.boundarySize - Math.floor(Math.random() * obj.boundarySize * 2);
+    mesh.position.x = settings.boundarySize - Math.floor(Math.random() * settings.boundarySize * 2);
+    mesh.position.y = settings.boundarySize - Math.floor(Math.random() * settings.boundarySize * 2);
+    mesh.position.z = settings.boundarySize - Math.floor(Math.random() * settings.boundarySize * 2);
     const dx = (0.5 - Math.random()) / 30 + 0.1;
     const dy = (0.5 - Math.random()) / 30 + 0.1;
     const dz = (0.5 - Math.random()) / 30 + 0.1;
@@ -231,12 +230,13 @@ render();</code></pre>
         </p>
         <pre><code class="language-javascript code">function adjustForBoundaries(bird) {
     const shape = bird.shape;
-    const adjust = obj.boundariesAdjust;
-    if (shape.position.x < -obj.boundarySize) {
+    const adjust = settings.boundariesAdjust;
+    const BOUNDARY = settings.boundarySize;
+    if (shape.position.x < -BOUNDARY) {
         bird.dx += adjust;
     }
 
-    if (shape.position.x > obj.boundarySize) {
+    if (shape.position.x > BOUNDARY) {
         bird.dx -= adjust;
     }
 
@@ -244,15 +244,15 @@ render();</code></pre>
         bird.dy += adjust;
     }
 
-    if (shape.position.y > obj.boundarySize) {
+    if (shape.position.y > BOUNDARY) {
         bird.dy -= adjust;
     }
 
-    if (shape.position.z < -obj.boundarySize) {
+    if (shape.position.z < -BOUNDARY) {
         bird.dz += adjust;
     }
 
-    if (shape.position.z > obj.boundarySize) {
+    if (shape.position.z > BOUNDARY) {
         bird.dz -= adjust;
     }
 }</code></pre>
@@ -293,7 +293,7 @@ render();</code></pre>
         The rules are surprisingly simple but can lead to some complex behaviors.
         </p>
         <p>Let's define the <b>cohesion</b> rule. It goes like this: Check which boids are within a given distance from
-            the current boid. The radius that we are going to consider is parametrized by the <i>obj.visibility</i>
+            the current boid. The radius that we are going to consider is parametrized by the <i>settings.visibility</i>
             param. <i>distanceVector</i> function calculates the distance between two points in 3D space. If a boid is
             within this radius, we consider it part of the flock. In this case we need to find the average position of
             the flock and adjust the movement to fly towards this position. If we found any potential flock-mates, we
@@ -303,7 +303,7 @@ render();</code></pre>
             into direction of the flock. If we didn't subtract out current position, we would aim at some position
             outside the flock and it's not what we want.</p>
         <pre><code class="language-javascript code">function adjustForFlock(i) {
-    const adjust = obj.flockAdjust;
+    const adjust = settings.flockAdjust;
     let cx = 0;
     let cy = 0;
     let cz = 0;
@@ -311,7 +311,7 @@ render();</code></pre>
     let count = 0;
     for (const c of birdsObjects) {
         if (c.id !== i.id) {
-            if (distanceVector(i.shape.position, c.shape.position) < obj.visibility) {
+            if (distanceVector(i.shape.position, c.shape.position) < settings.visibility) {
                 count++;
                 cx += c.shape.position.x;
                 cy += c.shape.position.y;
@@ -339,7 +339,7 @@ render();</code></pre>
         </p>
 
         <pre><code class="language-javascript code">function adjustAlignment(i) {
-    const adjust = obj.alignmentAdjust;
+    const adjust = settings.alignmentAdjust;
     let cx = 0;
     let cy = 0;
     let cz = 0;
@@ -347,7 +347,7 @@ render();</code></pre>
     let count = 0;
     for (const c of birdsObjects) {
         if (c.id !== i.id) {
-            if (distanceVector(i.shape.position, c.shape.position) < obj.visibility) {
+            if (distanceVector(i.shape.position, c.shape.position) < settings.visibility) {
                 count++;
                 cx += c.dx;
                 cy += c.dy;
@@ -363,15 +363,16 @@ render();</code></pre>
     }
 }</code></pre>
         <p>And the final rule: <b>separation</b>. Again we consider all nearby boids and try to keep at least
-            <i>obj.minDistance</i> from them. If we are too close, we adjust the speed into the opposite direction a
+            <i>settings.minDistance</i> from them. If we are too close, we adjust the speed into the opposite direction
+            a
             bit. Note that in case of cohesion, we subtracted our position from the average position of the flock. This
             time it's the other way around. We subtract the position of other boids from our position. This way the
             resulting speed vector pushes us away from the boids that are too close. Signs matter a lot!
         </p>
 
         <pre><code class="language-javascript code">function adjustForDistance(i) {
-    const distance = obj.minDistance;
-    const adjust = obj.distanceAdjust;
+    const distance = settings.minDistance;
+    const adjust = settings.distanceAdjust;
 
     let cx = 0;
     let cy = 0;

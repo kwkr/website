@@ -1,4 +1,4 @@
-obj = {
+settings = {
     birdsCount: 100,
     speedLimit: 0.5,
     boundariesAdjust: 0.05,
@@ -18,7 +18,7 @@ const PLANE_LEVEL = 50;
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
-camera.position.z = obj.cameraZ;
+camera.position.z = settings.cameraZ;
 const canvas = document.getElementById('birdsCanvas');
 const renderer = new THREE.WebGLRenderer({ antialias: true, canvas });
 renderer.shadowMap.enabled = true;
@@ -29,7 +29,7 @@ const windowSizeY = window.innerWidth > 720 ? window.innerHeight * 0.7 : window.
 renderer.setSize(windowSizeX, windowSizeY);
 
 // add boundary
-const edgesGeo = new THREE.BoxGeometry(obj.boundarySize * 2, obj.boundarySize * 2, obj.boundarySize * 2);
+const edgesGeo = new THREE.BoxGeometry(settings.boundarySize * 2, settings.boundarySize * 2, settings.boundarySize * 2);
 const edges = new THREE.EdgesGeometry(edgesGeo);
 const basicMaterial = new THREE.LineBasicMaterial({ color: '0x00ff00' });
 const boundaryMesh = new THREE.LineSegments(edges, basicMaterial);
@@ -91,8 +91,8 @@ scene.add(light);
 const birdsObjects = [];
 const colors = generateNeonColors(4);
 const gui = new lil.GUI();
-gui.add(obj, 'birdsCount', 10, 1000, 10).onFinishChange(() => {
-    const newBirdsNumber = obj.birdsCount;
+gui.add(settings, 'birdsCount', 10, 1000, 10).onFinishChange(() => {
+    const newBirdsNumber = settings.birdsCount;
     if (birdsObjects.length >= newBirdsNumber) {
         let deleted = birdsObjects.splice(newBirdsNumber, 1000);
         for (const item of deleted) {
@@ -108,47 +108,44 @@ gui.add(obj, 'birdsCount', 10, 1000, 10).onFinishChange(() => {
 
     }
 }).name("birds count");
-gui.add(obj, 'speedLimit', 0.01, 1, 0.01).name("speed limit");
-gui.add(obj, 'flockAdjust', 0, 1, 0.01).name("stay in flock");
-gui.add(obj, 'visibility', 0.5, 80, 0.5).name("vision range");
-gui.add(obj, 'alignmentAdjust', 0, 1, 0.01).name("align with the flock");
-gui.add(obj, 'minDistance', 0.5, 10, 0.5).name("min distance value");
-gui.add(obj, 'distanceAdjust', 0, 1, 0.01).name("keep distance");
-gui.add(obj, 'sizePenalty').name("flock size penalty");
-gui.add(obj, 'showBoundary').name("show boundaries").onChange(sb => {
+gui.add(settings, 'speedLimit', 0.01, 1, 0.01).name("speed limit");
+gui.add(settings, 'flockAdjust', 0, 1, 0.01).name("stay in flock");
+gui.add(settings, 'visibility', 0.5, 80, 0.5).name("vision range");
+gui.add(settings, 'alignmentAdjust', 0, 1, 0.01).name("align with the flock");
+gui.add(settings, 'minDistance', 0.5, 10, 0.5).name("min distance value");
+gui.add(settings, 'distanceAdjust', 0, 1, 0.01).name("keep distance");
+gui.add(settings, 'sizePenalty').name("flock size penalty");
+gui.add(settings, 'showBoundary').name("show boundaries").onChange(sb => {
     if (sb) {
         scene.add(boundaryMesh);
     } else {
         scene.remove(boundaryMesh);
     }
 });
-gui.add(obj, 'boundarySize', 10, 200, 10).onFinishChange(() => {
+gui.add(settings, 'boundarySize', 10, 200, 10).onFinishChange(() => {
     boundaryMesh.geometry.dispose();
-    boundaryMesh.geometry = new THREE.EdgesGeometry(new THREE.BoxGeometry(obj.boundarySize * 2, obj.boundarySize * 2, obj.boundarySize * 2));
-    boundaryMesh.position.y = obj.boundarySize - PLANE_LEVEL;
+    boundaryMesh.geometry = new THREE.EdgesGeometry(new THREE.BoxGeometry(settings.boundarySize * 2, settings.boundarySize * 2, settings.boundarySize * 2));
+    boundaryMesh.position.y = settings.boundarySize - PLANE_LEVEL;
 }).name("boundary size");
-gui.add(obj, 'boundariesAdjust', 0.01, 1, 0.01).name("avoid boundaries");
-gui.add(obj, 'cameraZ', 100, 300, 10).name("camera distance").onFinishChange(() => {
-    console.log(obj.cameraZ)
-    camera.position.z = obj.cameraZ;
+gui.add(settings, 'boundariesAdjust', 0.01, 1, 0.01).name("avoid boundaries");
+gui.add(settings, 'cameraZ', 100, 300, 10).name("camera distance").onFinishChange(() => {
+    console.log(settings.cameraZ)
+    camera.position.z = settings.cameraZ;
 });
 gui.close();
-
 
 function degreesToRadians(degrees) {
     return degrees * (Math.PI / 180);
 }
-
-
 
 const geometry = new THREE.ConeGeometry(1, 3, 8);
 function getNewBird(id) {
     const material = new THREE.MeshToonMaterial({ color: colors[Math.floor(Math.random() * colors.length)] });
     const mesh = new THREE.Mesh(geometry, material);
     mesh.castShadow = true;
-    mesh.position.x = obj.boundarySize - Math.floor(Math.random() * obj.boundarySize * 2);
-    mesh.position.y = obj.boundarySize - Math.floor(Math.random() * obj.boundarySize * 2);
-    mesh.position.z = obj.boundarySize - Math.floor(Math.random() * obj.boundarySize * 2);
+    mesh.position.x = settings.boundarySize - Math.floor(Math.random() * settings.boundarySize * 2);
+    mesh.position.y = settings.boundarySize - Math.floor(Math.random() * settings.boundarySize * 2);
+    mesh.position.z = settings.boundarySize - Math.floor(Math.random() * settings.boundarySize * 2);
     const dx = (0.5 - Math.random()) / 30 + 0.1;
     const dy = (0.5 - Math.random()) / 30 + 0.1;
     const dz = (0.5 - Math.random()) / 30 + 0.1;
@@ -156,23 +153,20 @@ function getNewBird(id) {
     return item;
 }
 
-
-for (let k = 0; k < obj.birdsCount; k++) {
+for (let k = 0; k < settings.birdsCount; k++) {
     const item = getNewBird(k);
     scene.add(item.shape);
     birdsObjects.push(item);
 }
 
-
-
 function adjustForBoundaries(bird) {
     const shape = bird.shape;
-    const adjust = obj.boundariesAdjust;
-    if (shape.position.x < -obj.boundarySize) {
+    const adjust = settings.boundariesAdjust;
+    if (shape.position.x < -settings.boundarySize) {
         bird.dx += adjust;
     }
 
-    if (shape.position.x > obj.boundarySize) {
+    if (shape.position.x > settings.boundarySize) {
         bird.dx -= adjust;
     }
 
@@ -180,21 +174,21 @@ function adjustForBoundaries(bird) {
         bird.dy += adjust;
     }
 
-    if (shape.position.y > obj.boundarySize) {
+    if (shape.position.y > settings.boundarySize) {
         bird.dy -= adjust;
     }
 
-    if (shape.position.z < -obj.boundarySize) {
+    if (shape.position.z < -settings.boundarySize) {
         bird.dz += adjust;
     }
 
-    if (shape.position.z > obj.boundarySize) {
+    if (shape.position.z > settings.boundarySize) {
         bird.dz -= adjust;
     }
 }
 
 function adjustForFlock(i) {
-    const adjust = obj.flockAdjust;
+    const adjust = settings.flockAdjust;
     let cx = 0;
     let cy = 0;
     let cz = 0;
@@ -202,7 +196,7 @@ function adjustForFlock(i) {
     let count = 0;
     for (const c of birdsObjects) {
         if (c.id !== i.id) {
-            if (distanceVector(i.shape.position, c.shape.position) < obj.visibility) {
+            if (distanceVector(i.shape.position, c.shape.position) < settings.visibility) {
                 count++;
                 cx += c.shape.position.x;
                 cy += c.shape.position.y;
@@ -211,7 +205,7 @@ function adjustForFlock(i) {
         }
     }
 
-    const factor = obj.sizePenalty ? Math.min(1, Math.max(0.2, (adjust * 1 / count) * 5)) : 1;
+    const factor = settings.sizePenalty ? Math.min(1, Math.max(0.2, (adjust * 1 / count) * 5)) : 1;
 
     if (count > 0) {
         i.dx += adjust * factor * ((cx / count) - i.shape.position.x);
@@ -221,7 +215,7 @@ function adjustForFlock(i) {
 }
 
 function adjustAlignment(i) {
-    const adjust = obj.alignmentAdjust;
+    const adjust = settings.alignmentAdjust;
     let cx = 0;
     let cy = 0;
     let cz = 0;
@@ -229,7 +223,7 @@ function adjustAlignment(i) {
     let count = 0;
     for (const c of birdsObjects) {
         if (c.id !== i.id) {
-            if (distanceVector(i.shape.position, c.shape.position) < obj.visibility) {
+            if (distanceVector(i.shape.position, c.shape.position) < settings.visibility) {
                 count++;
                 cx += c.dx;
                 cy += c.dy;
@@ -246,8 +240,8 @@ function adjustAlignment(i) {
 }
 
 function adjustForDistance(i) {
-    const distance = obj.minDistance;
-    const adjust = obj.distanceAdjust;
+    const distance = settings.minDistance;
+    const adjust = settings.distanceAdjust;
 
     let cx = 0;
     let cy = 0;
@@ -271,43 +265,39 @@ function adjustForDistance(i) {
     }
 }
 
-
-function adjustSpeed(c) {
-    if (c.dx < 0) {
-        if (c.dx < -obj.speedLimit) {
-            c.dx = -obj.speedLimit
+function adjustSpeed(i) {
+    if (i.dx < 0) {
+        if (i.dx < -settings.speedLimit) {
+            i.dx = -settings.speedLimit
         }
     }
-    if (c.dy < 0) {
-        if (c.dy < -obj.speedLimit) {
-            c.dy = -obj.speedLimit
+    if (i.dy < 0) {
+        if (i.dy < -settings.speedLimit) {
+            i.dy = -settings.speedLimit
         }
     }
-    if (c.dz < 0) {
-        if (c.dz < -obj.speedLimit) {
-            c.dz = -obj.speedLimit
-        }
-    }
-
-
-    if (c.dx >= 0) {
-        if (c.dx > obj.speedLimit) {
-            c.dx = obj.speedLimit
-        }
-    }
-    if (c.dy >= 0) {
-        if (c.dy > obj.speedLimit) {
-            c.dy = obj.speedLimit
-        }
-    }
-    if (c.dz >= 0) {
-        if (c.dz > obj.speedLimit) {
-            c.dz = obj.speedLimit
+    if (i.dz < 0) {
+        if (i.dz < -settings.speedLimit) {
+            i.dz = -settings.speedLimit
         }
     }
 
+    if (i.dx >= 0) {
+        if (i.dx > settings.speedLimit) {
+            i.dx = settings.speedLimit
+        }
+    }
+    if (i.dy >= 0) {
+        if (i.dy > settings.speedLimit) {
+            i.dy = settings.speedLimit
+        }
+    }
+    if (i.dz >= 0) {
+        if (i.dz > settings.speedLimit) {
+            i.dz = settings.speedLimit
+        }
+    }
 }
-
 
 function distanceVector(v1, v2) {
     const dx = v1.x - v2.x;
@@ -320,7 +310,7 @@ function distanceVector(v1, v2) {
 const pointOfInterest = new THREE.Vector3(0, 0, 0);
 let angle = 0;
 function updateCameraPosition() {
-    let radius = obj.cameraZ;
+    const radius = settings.cameraZ;
     angle += 0.001;
     camera.position.x = pointOfInterest.x + radius * Math.sin(angle);
     camera.position.z = pointOfInterest.z + radius * Math.cos(angle);
@@ -339,7 +329,6 @@ const render = function () {
 
         const shape = item.shape;
 
-
         shape.position.x += item.dx;
         shape.position.y += item.dy;
         shape.position.z += item.dz;
@@ -357,6 +346,8 @@ const render = function () {
 
 render();
 
+
+// utils for generating colors
 function generateNeonColors(n) {
     const colors = [];
     const hueStep = 360 / n;
