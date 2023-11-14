@@ -3,6 +3,7 @@ body {
     background-color: #222436;
     color: #dfe2ed;
     font-family: monospace;
+    width: 100%;
 }
 
 a:link {
@@ -22,12 +23,13 @@ a:active {
 }
 
 h1 {
-    margin: 12px 48px;
+    margin-top: 24px;
+    margin-right: 48px;
 }
 
 main {
     margin: 0 48px;
-    margin-bottom: 24px;
+    margin-bottom: 48px;
 }
 
 .code {
@@ -35,5 +37,30 @@ main {
 }
 
 p {
+    font-size: 1rem;
     text-align: justify;
+}
+
+ul,
+li {
+    font-size: 1rem;
+}
+
+.ml {
+    margin-left: 48px;
+}
+
+video {
+    width: 100%;
+}
+
+@media (max-width: 640px) {
+    .ml {
+        margin-left: 12px;
+    }
+
+    main {
+        margin: 0 24px;
+    }
+
 }

@@ -2,6 +2,7 @@
 
 <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>The coolest intro to Three.js</title>
     <style>
         canvas {
@@ -27,7 +28,7 @@
 </head>
 
 <body>
-    <h1>The coolest intro to Three.js</h1>
+    <h1 class="ml">The coolest intro to Three.js</h1>
     <div class="container">
         <canvas id="birdsCanvas"></canvas>
     </div>
@@ -46,7 +47,7 @@
                 rel="noopener noreferrer" href="https://eater.net/boids">Ben Eater</a>. After modifying
             it a bit, I could achieve some
             visually pleasing effects.</p>
-        <video style="width: 400px;" src="2d-boids.mp4" loop controls></video>
+        <video src="2d-boids.mp4" loop controls></video>
         <p> It would be a lot cooler though, if this were done in 3D. The logic is very simple so nothing prevents me
             from introducing another dimension to it. With the help of <a target="_blank" rel="noopener noreferrer"
                 href="https://threejs.org/">Three.js</a> the
@@ -55,7 +56,7 @@
 
         <h2>What you will learn?</h2>
         <p>
-            A lot...
+            A lot...</p>
         <ul>
             <li>How to setup a scene, camera, lights.</li>
             <li>Rules of the boids algorithm.</li>
@@ -63,10 +64,12 @@
             <li>How the rendering is done.</li>
             <li>How to move objects around.</li>
         </ul>
-        I won't go through the code line by line. If you want, you can always download the source code yourself and run
-        it. My goal here, is to give you enough information to start playing with it. If you are only interested in
-        playing with the results, you can use the canvas at the very top. The "Controls" tab allows you to adjust
-        different parameters of the simulation to see how it impacts the resulting behavior.
+        <p>
+            I won't go through the code line by line. If you want, you can always download the source code yourself and
+            run
+            it. My goal here, is to give you enough information to start playing with it. If you are only interested in
+            playing with the results, you can use the canvas at the very top. The "Controls" tab allows you to adjust
+            different parameters of the simulation to see how it impacts the resulting behavior.
         </p>
         <h2>Lights, perspective camera, action!</h2>
         <p>
@@ -496,15 +499,20 @@ scene.add(skyMesh);</code></pre>
             this is a very primitive example. Yet we have to start somewhere.</p>
 
         <h2>Summary</h2>
-        So that's it. With this lengthy article we were not only able to build a funny toy to play with, but also learn
-        a few neat things that will allow you to start creating your own experiments. I strongly recommend downloading
-        the full code and trying to modify it and see what happens. The possibilities are endless. You can add a
-        predator among the birds that they will try to avoid or maybe some obstacles just to see the result. The best
-        thing about it is that you can just run it in your browser. You don't need anything else beside the thing that
-        you use daily.
-        <a target="_blank" rel="noopener noreferrer" href="https://github.com/kwkr/boids-3d">You can find the source
-            code here!</a>
-
+        <p>
+            So that's it. With this lengthy article we were not only able to build a funny toy to play with, but also
+            learn
+            a few neat things that will allow you to start creating your own experiments. I strongly recommend
+            downloading
+            the full code and trying to modify it and see what happens. The possibilities are endless. You can add a
+            predator among the birds that they will try to avoid or maybe some obstacles just to see the result. The
+            best
+            thing about it is that you can just run it in your browser. You don't need anything else beside the thing
+            that
+            you use daily.<br>
+            <a target="_blank" rel="noopener noreferrer" href="https://github.com/kwkr/boids-3d">You can find the source
+                code here!</a>
+        </p>
     </main>
     <script src="script.js"></script>
     <script>hljs.highlightAll();</script>
