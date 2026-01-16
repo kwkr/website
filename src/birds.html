@@ -41,16 +41,16 @@
             parkour footage is already all over the place, so
             I wanted to come up with
             something unique. Because of that, I started researching generative algorithms. When visualized, they look
-            pretty cool and provide almost unlimited possibilities for randomization which means seemingly new content
+            pretty cool and provide almost unlimited possibilities for randomization, which means seemingly new content
             can be easily created. I stumbled upon a 2D version of <a target="_blank" rel="noopener noreferrer"
                 href="https://en.wikipedia.org/wiki/Boids">boids</a> implemented by <a target="_blank"
                 rel="noopener noreferrer" href="https://eater.net/boids">Ben Eater</a>. After modifying
             it a bit, I could achieve some
             visually pleasing effects.</p>
         <video src="2d-boids.mp4" loop controls></video>
-        <p> It would be a lot cooler though, if this were done in 3D. The logic is very simple so nothing prevents me
+        <p> It would be a lot cooler, though, if this were done in 3D. The logic is very simple, so nothing prevents me
             from introducing another dimension to it. With the help of <a target="_blank" rel="noopener noreferrer"
-                href="https://threejs.org/">Three.js</a> the
+                href="https://threejs.org/">Three.js</a>, the
             result that you can see at the top can be achieved. You will also learn a thing or two which you can later
             use for your own projects.</p>
 
@@ -58,24 +58,24 @@
         <p>
             A lot...</p>
         <ul>
-            <li>How to setup a scene, camera, lights.</li>
+            <li>How to set up a scene, camera, lights.</li>
             <li>Rules of the boids algorithm.</li>
-            <li>What is geometry, mesh, material, shader.</li>
+            <li>What geometry, mesh, material, and shaders are.</li>
             <li>How the rendering is done.</li>
             <li>How to move objects around.</li>
         </ul>
         <p>
             I won't go through the code line by line. If you want, you can always download the source code yourself and
             run
-            it. My goal here, is to give you enough information to start playing with it. If you are only interested in
+            it. My goal here is to give you enough information to start playing with it. If you are only interested in
             playing with the results, you can use the canvas at the very top. The "Controls" tab allows you to adjust
             different parameters of the simulation to see how it impacts the resulting behavior.
         </p>
         <h2>Lights, perspective camera, action!</h2>
         <p>
-            First things first, we need to setup our rendering environment. There are a few parts to it. Scene is where
-            we add all the objects that we want to show. Next we need a camera, that will capture only the desired part
-            of our setup. The parameters that we specify when creating the camera will determine how will our view look
+            First things first, we need to set up our rendering environment. There are a few parts to it. The scene is where
+            we add all the objects that we want to show. Next, we need a camera that will capture only the desired part
+            of our setup. The parameters that we specify when creating the camera will determine what our view will look
             like.
         </p>
         <pre><code class="language-javascript code">const scene = new THREE.Scene();
@@ -86,7 +86,7 @@ const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerH
             the render are images that quickly change to give us the illusion of movement on the screen. The single
             such image is called a <b><i>frame</i></b>. Because it's a series of frames, we need to clear the display
             after
-            each frame, in order to start fresh every time.</p>
+            each frame in order to start fresh every time.</p>
         <pre><code class="language-javascript code">const canvas = document.getElementById('birdsCanvas');
 const renderer = new THREE.WebGLRenderer({ antialias: true, canvas });
 renderer.setClearColor("#000000");</code></pre>
@@ -94,16 +94,16 @@ renderer.setClearColor("#000000");</code></pre>
             Believe it or not, this is everything we need to start rendering. The stage will be empty at first, but we
             will take care of adding some elements shortly. Remember when I mentioned <b><i>frames</i></b>? Let's
             see
-            exactly what I meant when I said they a series of images shown to us one by one. The code below is the
+            exactly what I meant when I said they are a series of images shown to us one by one. The code below is the
             <b><i>rendering loop</i></b>. Maybe it doesn't look like much at first, but the magic actually happens with
-            the <b><i>requestAnimationFrame</i></b> function call. This lets the browser know, that we want to render
-            something and when the right time comes, the browser runs the provided render function. Each render call
-            schedules another one so we will run again and again until the user closes the tab. Painting is done at the
-            end of the render call. Usually, before performing it, we might want to update objects on our scene, so
-            the frame that will get painted differs from the previous one. For example if we have some object that is
+            the <b><i>requestAnimationFrame</i></b> function call. This lets the browser know that we want to render
+            something, and when the right time comes, the browser runs the provided render function. Each render call
+            schedules another one, so we will run again and again until the user closes the tab. Painting is done at the
+            end of the render call. Usually, before performing it, we might want to update objects on our scene so
+            the frame that will get painted differs from the previous one. For example, if we have some object that is
             moving, we update its position by some amount. Because a single render call is very fast, this update is
             done
-            many times per second.Let's say with each frame the object moves to the right by 1 centimeter. If we repeat
+            many times per second. Let's say with each frame the object moves to the right by 1 centimeter. If we repeat
             the move 30 times within one second, when it passes, the object will smoothly transition to the right by 30
             centimeters. This is how the illusion works. To recap: we update our objects and then the
             <b><i>renderer</i></b> renders a <b><i>frame</i></b> combining the scene with the camera.
@@ -116,7 +116,7 @@ renderer.setClearColor("#000000");</code></pre>
     renderer.render(scene, camera);
 };
 render();</code></pre>
-        <p>However with the current setup we wouldn't render anything meaningful. We didn't add any objects to the
+        <p>However, with the current setup, we wouldn't render anything meaningful. We didn't add any objects to the
             scene! What do we want to add first? Some cube? Or perhaps a model of a cat? That would be
             cool,
             but we would still only see darkness. Therefore, I recommend starting with some light source.
@@ -127,11 +127,11 @@ const intensity = 1;
 const light = new THREE.PointLight(color, intensity);
 light.position.set(0, 200, 0);
 scene.add(light);</code></pre>
-        <p>This is the first object, that we will add to our scene. We specify some initial properties, set the position
-            for it and add it. Remember this step, because adding other interesting objects will be very close to this.
+        <p>This is the first object that we will add to our scene. We specify some initial properties, set the position
+            for it, and add it. Remember this step because adding other interesting objects will be very close to this.
         </p>
-        <p>Finally it's time to add something that we will see. Our implementation of the boids algorithm will include
-            some boundaries. This is like a cage, within which all the action will happen. If some bird decides to fly
+        <p>Finally, it's time to add something that we will see. Our implementation of the boids algorithm will include
+            some boundaries. This is like a cage within which all the action will happen. If some bird decides to fly
             away, the rules we set will make it come back.</p>
         <pre><code class="language-javascript code">// add boundary
 const edgesGeo = new THREE.BoxGeometry(settings.boundarySize * 2, settings.boundarySize * 2, settings.boundarySize * 2);
@@ -139,24 +139,24 @@ const edges = new THREE.EdgesGeometry(edgesGeo);
 const basicMaterial = new THREE.LineBasicMaterial({ color: '0x00ff00' });
 const boundaryMesh = new THREE.LineSegments(edges, basicMaterial);
 scene.add(boundaryMesh);</code></pre>
-        <p>There are some common elements that we need to specify in order to create and object that will be visible
-            when rendered. The object that we see is a <b><i>mesh</i></b>. It combines information about what is the
-            shape of the object or <b><i>geometry</i></b> and the information about how does it look like called
+        <p>There are some common elements that we need to specify in order to create an object that will be visible
+            when rendered. The object that we see is a <b><i>mesh</i></b>. It combines information about what the
+            shape of the object is, or <b><i>geometry</i></b>, and the information about how it looks, called
             <b><i>material</i></b> (we can additionally boost our material with shaders which I will mention later).
             Because we are only interested in the lines of the boundaries, the process is a bit
             more complicated. The process of creating the <b><i>geometry</i></b> involves two steps. Creating
-            <b><i>material</i></b> is just a single step. We define it's color and that's it. Finally we compose the
-            target object using both parts that we created. Afterwards we add the <b><i>mesh</i></b> to the scene. If
+            <b><i>material</i></b> is just a single step. We define its color and that's it. Finally, we compose the
+            target object using both parts that we created. Afterwards, we add the <b><i>mesh</i></b> to the scene. If
             we run the script now, we will actually see the boundaries being rendered. The information that we got so
             far would already suffice if we wanted to create some render. We could grab some <b><i>mesh</i></b>, pick
-            some <b><i>material</i></b> and add it to the scene to see it rendered. But we are not stopping here. We are
+            some <b><i>material</i></b>, and add it to the scene to see it rendered. But we are not stopping here. We are
             still far from finished and have many interesting problems to solve ahead of us.
         </p>
         <h2>Movement is everything!</h2>
-        <p>There is a reason why TikTok is so popular, why Instagram is not only about photos anymore and why humans can
-            recognize something moving so fast. In the era, when we don't have to worry about predators anymore, things
+        <p>There is a reason why TikTok is so popular, why Instagram is not only about photos anymore, and why humans can
+            recognize something moving so fast. In the era when we don't have to worry about predators anymore, things
             that are moving are much more interesting than a static picture. This is why, in this part, we will animate
-            some objects. As mentioned earlier, the illusion of movement can be created, where a small change is applied
+            some objects. As mentioned earlier, the illusion of movement can be created where a small change is applied
             over and over again.
 
         </p>
@@ -174,16 +174,16 @@ function getNewBird(id) {
     const item = { shape: mesh, dx, dy, dz, id };
     return item;
 }</code></pre>
-        <p>We will be calling the function above to obtain so called <i>bird-oid objects (boids)</i> instances. We can
-            already recognize some familiar elements like geometry, material and a resulting mesh. While creating a new
+        <p>We will be calling the function above to obtain so-called <i>bird-oid objects (boids)</i> instances. We can
+            already recognize some familiar elements like geometry, material, and a resulting mesh. While creating a new
             boid, we place it in a random place within our boundaries by changing the <i>position</i> property on the
             mesh. The XYZ coordinates alone aren't enough for performing magic. We also need something that will allow
             us to
             tell how the specific boid moves within the 3D space. We generate 3 additional values, one for each of the
-            directions: dx, dy and dz. Together they form a vector, that describes in which direction and how fast the
+            directions: dx, dy, and dz. Together they form a vector that describes in which direction and how fast the
             boid will be moving. The values will be added to the position on each update to create the illusion of
-            flying. Finally we gather everything we know about this specific instance of a boid and put it in an object
-            for convenience. The boids produced by the method will be collected in an array, so we can keep track of our
+            flying. Finally, we gather everything we know about this specific instance of a boid and put it in an object
+            for convenience. The boids produced by the method will be collected in an array so we can keep track of our
             birds.
         </p>
         <pre><code class="language-javascript code">const render = function () {
@@ -199,7 +199,7 @@ function getNewBird(id) {
     renderer.render(scene, camera);
 };
 render();</code></pre>
-        <p>As promised, we update the render function to account for the movement. On each render call we go through our
+        <p>As promised, we update the render function to account for the movement. On each render call, we go through our
             boids and update their positions according to the direction they are going. If we compose all three values
             together, the boid will seem to move in some direction with some speed. This is already interesting, but it
             can quickly become chaotic as the birds will fly in some direction and soon be gone off camera. This is a
@@ -208,24 +208,24 @@ render();</code></pre>
         </p>
         <h2>Start with the basics</h2>
         <p>
-            Let's define some simple function that will make our boids stay within designated area. Again, after it's
-            finished, we will include it in our render loop, so it can take care of making sure the rules are followed
+            Let's define some simple function that will make our boids stay within the designated area. Again, after it's
+            finished, we will include it in our render loop so it can take care of making sure the rules are followed
             on each iteration.
         </p>
         <p>
-            The rule is simple. We defined a box and we want the boids to stay within that box. So for each coordinate,
-            we check whether it's withing specified bounds. We don't have to adjust anything as long as the boid is
-            inside. But once it's position is beyond our box, we have to act. Specifically, we will counter act. That
+            The rule is simple. We defined a box, and we want the boids to stay within that box. So for each coordinate,
+            we check whether it's within specified bounds. We don't have to adjust anything as long as the boid is
+            inside. But once its position is beyond our box, we have to act. Specifically, we will counteract. That
             means, if the boid crossed some line, we will slightly tilt it to go the opposite direction. We are not
-            changing it's speed in a given direction at once because it would look artificial. Small tilts spanning
+            changing its speed in a given direction at once because it would look artificial. Small tilts spanning
             across a few render calls will create a nice, smooth movement. Additionally, the adjust value is
             parametrized, so later when running the simulation, we can change how strong we want the movement to be
-            counteracted and see how does the response look like. Just to illustrate the whole situation with a specific
-            example: Imagine the boid is moving only along X axis. Every frame, it moves 10 units towards it's positive
-            direction. For the sake of the example, we will set the boundary at 20. The bird starts at 0. After first
-            update it's at 10. After second it's at 20. After the third, it's at 30 so we have to act. We decrease it's
-            speed by 2 every frame. This way, the bird still moves towards the positive end, but it's progress is
-            slowing down. The speed goes from 8 through 6, 4 and 2 until it eventually stops, reverses its movement and
+            counteracted and see how the response looks. Just to illustrate the whole situation with a specific
+            example: Imagine the boid is moving only along X axis. Every frame, it moves 10 units towards its positive
+            direction. For the sake of the example, we will set the boundary at 20. The bird starts at 0. After the first
+            update, it's at 10. After the second, it's at 20. After the third, it's at 30, so we have to act. We decrease its
+            speed by 2 every frame. This way, the bird still moves towards the positive end, but its progress is
+            slowing down. The speed goes from 8 through 6, 4, and 2 until it eventually stops, reverses its movement, and
             starts going the opposite direction. All the following rules we will make using the same principles.
         </p>
         <pre><code class="language-javascript code">function adjustForBoundaries(bird) {
@@ -274,34 +274,33 @@ render();</code></pre>
     renderer.render(scene, camera);
 };
 render();</code></pre>
-        <p>The direction of the boid is updated accounting for the rule that we specified and the new dx, dy and dz
-            values
-            are used in order to update boid's position accordingly.</p>
+        <p>The direction of the boid is updated accounting for the rule that we specified, and the new dx, dy, and dz
+            values are used in order to update the boid's position accordingly.</p>
         <h2>Rules aren't always bad</h2>
         <p>We know how to render stuff. We know how to make it move. We know how to influence that movement with rules.
             It's time to finally start talking about parts that make this whole simulation interesting. We need
-            to create some rules which composed together will make our birds move in a realistic way. The basic <a
+            to create some rules which, composed together, will make our birds move in a realistic way. The basic <a
                 target="_blank" rel="noopener noreferrer" href="https://en.wikipedia.org/wiki/Boids">boids simulation
                 description</a> requires three of them to be present:
         <ul>
             <li>cohesion - make the birds look for nearby birds and join them to form flocks.</li>
-            <li>alignment - when in a flock, adjust the speed and direction to make it look like they are cooperating
+            <li>alignment - when in a flock, adjust the speed and direction to make it look like they are cooperating.
             </li>
             <li>separation - the birds as individuals still need some private space, so make them keep some small
-                distance between each other</li>
+                distance between each other.</li>
         </ul>
         The rules are surprisingly simple but can lead to some complex behaviors.
         </p>
         <p>Let's define the <b>cohesion</b> rule. It goes like this: Check which boids are within a given distance from
             the current boid. The radius that we are going to consider is parametrized by the <i>settings.visibility</i>
             param. <i>distanceVector</i> function calculates the distance between two points in 3D space. If a boid is
-            within this radius, we consider it part of the flock. In this case we need to find the average position of
+            within this radius, we consider it part of the flock. In this case, we need to find the average position of
             the flock and adjust the movement to fly towards this position. If we found any potential flock-mates, we
-            adjust our movement to go into direction of the prospective flock. The <i>adjust</i> param will allow us to
+            adjust our movement to go into the direction of the prospective flock. The <i>adjust</i> param will allow us to
             control how strong the boids should be seeking for forming flocks. Note that when making the final
             adjustment, we subtract our current position from the average position. This is because our goal is to go
-            into direction of the flock. If we didn't subtract out current position, we would aim at some position
-            outside the flock and it's not what we want.</p>
+            into the direction of the flock. If we didn't subtract our current position, we would aim at some position
+            outside the flock, and it's not what we want.</p>
         <pre><code class="language-javascript code">function adjustForFlock(i) {
     const adjust = settings.flockAdjust;
     let cx = 0;
@@ -327,11 +326,11 @@ render();</code></pre>
     }
 }</code></pre>
 
-        <p><b>alignment</b> rule looks very similar. The only difference is the goal. We want the boid to adjust its
-            speed to the flock. WE WANT ORDER and anything that goes too fast or too slow would break it. To achieve
+        <p>The <b>alignment</b> rule looks very similar. The only difference is the goal. We want the boid to adjust its
+            speed to the flock. WE WANT ORDER, and anything that goes too fast or too slow would break it. To achieve
             this,
             we are looking for the average speed with which the flock is going. Again, we look through nearby
-            boids, we collect their speeds and adjust the speed of the current boid according to the average. Same as
+            boids, we collect their speeds, and adjust the speed of the current boid according to the average. Same as
             above,
             the final adjustment also takes into consideration the current speed at which our boid is going. If we
             didn't account for that, the adjustment would be too big and would lead to some strange behavior being
@@ -396,8 +395,8 @@ render();</code></pre>
     }
 }</code></pre>
         <h2>Putting it all together</h2>
-        <p>We have seen this fragment so many times, that this step should be a formality to us. We would be able to
-            blindly tell where should we put our newly defined rules. There is one simple rule that I skipped here. To
+        <p>We have seen this fragment so many times that this step should be a formality to us. We would be able to
+            blindly tell where we should put our newly defined rules. There is one simple rule that I skipped here. To
             keep the simulation perceivable, we need to set a max limit on the speed at which the boids are moving. As a
             simple exercise, you can either try implementing it yourself or just look at the full source code. After
             you've done that, you can try turning the rules on and off and see what happens when some of them are not
@@ -422,13 +421,13 @@ render();</code></pre>
 render();</code></pre>
         <h2>Pimp my birds</h2>
         <p>Are we happy with ourselves? "What's there to be happy about? Job's not finished. Job finished? No, I don't
-            think so."There are a few final touches
-            that we need to add in order to call the job done. It works, but it's not as pretty as it could be. Our bird
-            are cone-shaped so we definitely have some potential there. Also I promised you shaders, so we need to
+            think so." There are a few final touches
+            that we need to add in order to call the job done. It works, but it's not as pretty as it could be. Our birds
+            are cone-shaped, so we definitely have some potential there. Also, I promised you shaders, so we need to
             mention them as well.</p>
-        <p>Just to remind you, each boid carries with it some piece of information namely its speed in all directions.
-            This is very valuable when it comes to the aesthetics of our simulation. Wouldn't it be awesome, if our
-            birds point to the direction they are going to with their pointy cone ends? This sounds daunting but it's
+        <p>Just to remind you, each boid carries with it some piece of information, namely its speed in all directions.
+            This is very valuable when it comes to the aesthetics of our simulation. Wouldn't it be awesome if our
+            birds point to the direction they are going to with their pointy cone ends? This sounds daunting, but it's
             very straightforward to implement.</p>
         <pre><code class="language-javascript code">const render = function () {
     requestAnimationFrame(render);
@@ -457,16 +456,16 @@ render();</code></pre>
         <p>Oh boi, how many times did we already see this? But there is a reason to it. We can actually say our whole
             simulation lives in here. That's why we added some changes here. Given the information about speed in
             different directions, we can construct a vector that tells us where a bird is going. We use this
-            information, to rotate our mesh with it's pointy end facing the desired direction. Don't be scared of the
+            information to rotate our mesh with its pointy end facing the desired direction. Don't be scared of the
             quaternions. They are there to make our work with 3D rotations easier. In simple words, they are used to
-            describes operation needed to go from one orientation to another. We take the start vector, we take the
+            describe the operation needed to go from one orientation to another. We take the start vector, we take the
             target
-            vector and the quaternion tells us how we can land where we want to land. The rotation is finalized, when
+            vector, and the quaternion tells us how we can land where we want to land. The rotation is finalized when
             we call the <i>copy</i> method. With this change, our birds will look much more alive!</p>
-        <p>As the last part we will take the boids out of a void and place them in a real world. To do this, we will
+        <p>As the last part, we will take the boids out of a void and place them in a real world. To do this, we will
             give them some fake ground underneath and a fake sky.</p>
         <p>Creating a ground is super simple. Same process of creating a mesh again. We create a plane geometry first,
-            a simple green material next, we connect them in a mesh and add to the scene. After adjusting the position
+            a simple green material next, we connect them in a mesh, and add to the scene. After adjusting the position
             a bit, it is ready to be rendered.</p>
         <pre><code class="language-javascript code">// add bottom plane
 const planeGeometry = new THREE.PlaneGeometry(2000, 2000);
@@ -478,7 +477,7 @@ scene.add(plane);</code></pre>
         <p>It gets more fun when creating a sky. Rendering is all about cheating. We use some seemingly unrelated
             things and make them pretend to be someone else. To create a sky, we take a sphere. Then we make it big
             enough to contain our microcosmos and put everything in the middle. We paint it blue from the inside and
-            voilà! From the boids perspective it looks like they have a nice spherical sky above them.</p>
+            voilà! From the boids' perspective, it looks like they have a nice spherical sky above them.</p>
         <pre><code class="language-javascript code">// create sky
 const skyMaterial = new THREE.ShaderMaterial({
     vertexShader,
@@ -491,8 +490,8 @@ scene.add(skyMesh);</code></pre>
         <p>Do I really have to go over creating a mesh again? Okay, take the geometry, take the material, combine it in
             a mesh and add it to the scene... Wait! There is something strange with the material over there! I can
             finally see a shader mentioned! But what exactly is it? Or what are THEY? In simple terms, they are programs
-            (not necessarily small and THEY because they often come in pairs) that determine how the material looks
-            like. The cool thing about them is they are meant to be run fast in parallel on the GPU and can take many
+            (not necessarily small and THEY because they often come in pairs) that determine how the material looks.
+            The cool thing about them is they are meant to be run fast in parallel on the GPU and can take many
             different inputs (like time and textures) to produce awesome visual effects. If you want to see what
             they
             are capable of, I strongly recommend checking out <a target="_blank" rel="noopener noreferrer"
@@ -501,7 +500,7 @@ scene.add(skyMesh);</code></pre>
 
         <h2>Summary</h2>
         <p>
-            So that's it. With this lengthy article we were not only able to build a funny toy to play with, but also
+            So that's it. With this lengthy article, we were not only able to build a funny toy to play with, but also
             learn
             a few neat things that will allow you to start creating your own experiments. I strongly recommend
             downloading
